@@ -49,7 +49,7 @@
 
               <table class="table table-striped table-bordered">
                 <thead>
-                  <tr class="text-center">
+                  <tr class="text-center fw-bold">
                     <td>ID Buku</td>
                     <td>Judul</td>
                     <td>Penulis</td>
@@ -68,11 +68,12 @@
                       <td>{{ book.year }}</td>
                       <td>{{ book.publisher }}</td>
                       <td class="text-center" style="width: 5%">
-                        <a type="button" href="#"><i class="bi bi-pencil-square"></i></a>
+                        <a type="button" href="{{ book.update_url }}"><i class="bi bi-pencil-square"></i></a>
                       </td>
                       <!-- trigger modal konfirmasi delete -->
                       <td class="text-center" style="width: 5%">
-                        <a href="#" onclick="return ConfirmDelete();"><i class="bi bi-trash"></i></a>
+                        <a href="{{ book.delete_url }}" onclick="return deleteBook();"><i class="bi bi-trash"></i></a>
+                        </form>
                       </td>
                   </tr>
                   {% endfor %}
@@ -80,40 +81,7 @@
               </table>
 
               <!-- Modal Tambah Data -->
-              <div class="modal fade" id="modal_edit_buku" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data Buku</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <form id="updateForm" method="post" enctype="multipart/form-data" class="ms-2">
-                        <div class="mb-3 mt-2">
-                          <label for="name" class="form-label">Judul</label>
-                          <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan judul buku" value="{{ book.title }}" required />
-                        </div>
-                        <div class="mb-3 mt-2">
-                          <label for="name" class="form-label">Penulis</label>
-                          <input type="text" class="form-control" id="penulis" name="penulis" placeholder="Masukkan penulis buku" value="{{ book.author }}" required />
-                        </div>                        
-                        <div class="mb-3 mt-2">
-                          <label for="name" class="form-label">Tahun Terbit</label>
-                          <input type="text" class="form-control" id="tahun_terbit" name="tahun_terbit" placeholder="Masukkan tahun terbit" value="{{ book.year }}" required />
-                        </div>
-                        <div class="mb-3 mt-2">
-                          <label for="name" class="form-label">Penerbit</label>
-                          <input type="text" class="form-control" id="penerbit" name="penerbit" placeholder="Masukkan penerbit" value="{{ book.publisher }}"  required />
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                          <button type="Submit" class="btn btn-success">Simpan</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
               <!-- Akhir Modal Tambah Data -->
             </div>
           </div>
@@ -131,31 +99,24 @@
       {
         return confirm("Apakah Anda yakin akan menghapus data ini?")
       }
-
-      function UpdateBook()
-      {
-        document.getElementById('updateForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        var form = new FormData(this);
-        var bookId = "{{ book.id }}";
-        fetch('/books/' + bookId + '/update', {
-        method: 'POST',
-        body: form
-        })
-        .then(function(response) {
-            if (response.ok) {
-            alert('Book updated successfully');
-            window.location.href = '/books';
-            } else {
-            alert('Error updating book');
-            }
-        })
-        .catch(function(error) {
-            console.error('Error:', error);
-            alert('Error updating book');
-        });
-        });
-      }
+      function deleteBook(bookId) {
+            fetch('/books/' + bookId, {
+                method: 'DELETE'
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    alert('Book deleted successfully');
+                    window.location.href = '/books';
+                } else {
+                    alert('Error deleting book');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('Error deleting book');
+            });
+        }
+   
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

@@ -71,7 +71,9 @@ def get_all_books():
             'title': book['title'],
             'author': book['author'],
             'year': book['year'],
-            'publisher': book['publisher']
+            'publisher': book['publisher'],
+            'update_url': url_for('update_book_form', book_id=book['id']),
+            'delete_url': url_for('delete_book', book_id=book['id'])
         }
         book_list.append(book_dict)
 
@@ -139,14 +141,20 @@ def update_book_form(book_id):
 
 
 # Delete a book
-@app.route('/books/<int:book_id>/delete/', methods=['DELETE'])
+@app.route('/books/<int:book_id>/delete', methods=['DELETE'])
 def delete_book(book_id):
     conn = get_db()
     cursor = conn.cursor()
+    cursor.execute('SELECT * FROM books WHERE id = ?', (book_id,))
+    book = cursor.fetchone()
+
+    if book is None:
+        return jsonify({'message': 'Book not found'}), 404
+
     cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
     conn.commit()
 
-    return redirect(url_for('get_all_books', book_id=book_id))
+    return jsonify({'message': 'Book deleted successfully'})
 
 
 if __name__ == '__main__':
