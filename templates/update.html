@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Book</title>
+    <form id="updateForm" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="text" name="title" value="{{ book.title }}" required>
+        <input type="text" name="author" value="{{ book.author }}" required>
+        <input type="text" name="year" value="{{ book.year }}" required>
+        <input type="text" name="publisher" value="{{ book.publisher }}" required>
+        <button type="submit">Update</button>
+      </form>
+      
+    <script>
+            document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = new FormData(this);
+            var bookId = "{{ book.id }}";
+            fetch('/books/' + bookId + '/update', {
+            method: 'POST',
+            body: form
+            })
+            .then(function(response) {
+                if (response.ok) {
+                alert('Book updated successfully');
+                window.location.href = '/books';
+                } else {
+                alert('Error updating book');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('Error updating book');
+            });
+        });
+    </script>
+      
+</body>
+</html>
