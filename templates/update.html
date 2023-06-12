@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Update Book</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+
+    <!-- Boostrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
+
+    
+  </head>
+  <body>
+    
+    <div class="row me-0">
+      <!-- Header dashboard -->
+      <div class="row align-items-start bg-success bg-opacity-10">
+        <div class="col-6 my-4">
+          <h3 class="ms-5">Book Dashboard</h3>
+        </div>
+
+        <div class="col-3 my-4 ms-auto ps-5">
+          <div class="dropdown">
+            <button class="btn dropdown-toggle fs-3" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle fs-3"></i> </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item text-dark">{{ username }}</a></li>
+              <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- Akhir Header dashboard -->
+
+        <!-- Content Dashboard -->
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-8 align-items-center">
+            <h1 class="mt-4">Update Book</h1>
+            <div class="card p-5 mt-4">
+                <form id="updateForm" method="POST">
+                    <input type="hidden" name="_method" value="PUT">
+                    <label for="title">Title</label>
+                    <br>
+                    <input type="text" class="form-control" name="title" id="title" value="{{ book.title }}" required><br>
+
+                    <label for="author">Author</label>
+                    <br>
+                    <input type="text" class="form-control" name="author" id="author" value="{{ book.author }}" required><br>
+
+                    <label for="year">Year</label>
+                    <br>
+                    <input type="text" class="form-control" name="year" id="year" value="{{ book.year }}" required><br>
+
+                    <label for="publisher">Publisher</label>
+                    <br>
+                    <input type="text" class="form-control" name="publisher" id="publisher" value="{{ book.publisher }}" required><br>
+                    <button type="submit" class="btn btn-primary ">Edit </button>
+                </form>
+            </div>
+          </div>
+        </div>
+  </div>
+        <!-- Akhir Content Dashboard -->
+
+    <script>
+            document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = new FormData(this);
+            var bookId = "{{ book.id }}";
+            fetch('/books/' + bookId + '/update', {
+            method: 'POST',
+            body: form
+            })
+            .then(function(response) {
+                if (response.ok) {
+                alert('Book updated successfully');
+                window.location.href = '/';
+                } else {
+                alert('Error updating book');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('Error updating book');
+            });
+        });
+    </script>
+      
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js" integrity="sha512-tWHlutFnuG0C6nQRlpvrEhE4QpkG1nn2MOUMWmUeRePl4e3Aki0VB6W1v3oLjFtd0hVOtRQ9PHpSfN6u6/QXkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
