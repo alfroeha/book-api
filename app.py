@@ -141,7 +141,7 @@ def update_book_form(book_id):
 
 
 # Delete a book
-@app.route('/books/<int:book_id>/delete', methods=['DELETE'])
+@app.route('/books/<int:book_id>/delete', methods=['POST', 'DELETE'])
 def delete_book(book_id):
     conn = get_db()
     cursor = conn.cursor()
@@ -151,10 +151,12 @@ def delete_book(book_id):
     if book is None:
         return jsonify({'message': 'Book not found'}), 404
 
-    cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
-    conn.commit()
+    if request.method == 'POST' or (request.method == 'DELETE' and request.form.get('_method') == 'DELETE'):
+        cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
+        conn.commit()
+        return redirect(url_for('get_all_books'))
 
-    return jsonify({'message': 'Book deleted successfully'})
+    return jsonify({'message': 'Invalid request method'}), 405
 
 
 if __name__ == '__main__':
