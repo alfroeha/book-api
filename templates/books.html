@@ -97,10 +97,6 @@
     
     <!-- javascripts -->
     <script>
-      function ConfirmDelete()
-      {
-        return confirm("Apakah Anda yakin akan menghapus data ini?")
-      }
       function deleteBook(bookId) {
             fetch('/books/' + bookId, {
                 method: 'DELETE'
