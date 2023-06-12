@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thriftbooks</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+
+    <!-- Boostrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
+
+    <!-- styel CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}" type="text/css" />
+
+    
+
+  </head>
+  <body>
+    
+    <div class="row me-0">
+      <!-- Header dashboard -->
+      <div class="row align-items-start bg-success bg-opacity-10">
+        <div class="col-6 my-4">
+          <h3 class="ms-5">Book Dashboard</h3>
+        </div>
+
+        <div class="col-3 my-4 ms-auto ps-5">
+          <div class="dropdown">
+            <button class="btn dropdown-toggle fs-3" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle fs-3"></i> </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item text-dark">{{ username }}</a></li>
+              <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- Akhir Header dashboard -->
+
+        <!-- Content Dashboard -->
+      <div class="container">
+        <div class="row align-items-start">
+          <div class="col">
+            <div class="continer ms-2 my-4" style="width: 95%">
+              <!-- Button tambah data -->
+              <a type="button" class="btn btn-dark my-3" data-bs-toggle="modal" data-bs-target="#modal_tambah_buku" href="{{ url_for('insert_buku') }}">Tambah Data</a>
+
+              <table class="table table-striped table-bordered">
+                <tr class="text-center">
+                  <td>ID Buku</td>
+                  <td>Judul</td>
+                  <td>Penulis</td>
+                  <td>Tahun Terbit</td>
+                  <td>Penerbit</td>
+                  <td>Ubah</td>
+                  <td>Hapus</td>
+                </tr>
+                {%for baris in container %}
+                <tr>
+                  <td>{{ baris[0] }}</td>
+                  <td>{{ baris[2] }}</td>
+                  <td>{{ baris[3] }}</td>
+                  <td>{{ baris[4] }}</td>
+                  <td>{{ baris[5] }}</td>
+                  <td class="text-center" style="width: 5%">
+                    <a type="button" href="{{ url_for('update', id_buku=baris[0]) }}"><i class="bi bi-pencil-square"></i></a>
+                  </td>
+                  <!-- trigger modal konfirmasi delete -->
+                  <td class="text-center" style="width: 5%">
+                    <a href="{{ url_for('delete_buku', id_buku=baris[0]) }}" onclick="return ConfirmDelete();"><i class="bi bi-trash"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+
+              <!-- Modal Tambah Data -->
+              <div class="modal fade" id="modal_tambah_buku" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data Buku</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ url_for('insert_buku') }}" method="post" enctype="multipart/form-data" class="ms-2">
+                        <div class="mb-3 mt-2">
+                          <label for="name" class="form-label">ID Buku</label>
+                          <input type="text" class="form-control" id="kode" name="kode" placeholder="Masukkan kode buku" required />
+                        </div>
+                        <div class="mb-3 mt-2">
+                          <label for="name" class="form-label">Judul</label>
+                          <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan judul buku" required />
+                        </div>
+                        <div class="mb-3 mt-2">
+                          <label for="name" class="form-label">Penulis</label>
+                          <input type="text" class="form-control" id="genre" name="genre" placeholder="Masukkan genre buku" required />
+                        </div>                        
+                        <div class="mb-3 mt-2">
+                          <label for="name" class="form-label">Tahun Terbit</label>
+                          <input type="text" class="form-control" id="tahun_terbit" name="tahun_terbit" placeholder="Masukkan tahun terbit" required />
+                        </div>
+                        <div class="mb-3 mt-2">
+                          <label for="name" class="form-label">Penerbit</label>
+                          <input type="text" class="form-control" id="penerbit" name="penerbit" placeholder="Masukkan penerbit" required />
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                          <button type="Submit" class="btn btn-success">Simpan</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Akhir Modal Tambah Data -->
+            </div>
+          </div>
+        </div>
+  </div>
+        <!-- Akhir Content Dashboard -->
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js" integrity="sha512-tWHlutFnuG0C6nQRlpvrEhE4QpkG1nn2MOUMWmUeRePl4e3Aki0VB6W1v3oLjFtd0hVOtRQ9PHpSfN6u6/QXkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- javascripts -->
+    <script>
+      function ConfirmDelete()
+      {
+        return confirm("Apakah Anda yakin akan menghapus data ini?")
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>
