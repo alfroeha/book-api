@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Book</title>
+</head>
+<body>
+    <h1>Add Book</h1>
+    <form method="POST" action="{{ url_for('create_book') }}">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required><br><br>
+
+        <label for="author">Author:</label>
+        <input type="text" name="author" id="author" required><br><br>
+
+        <label for="year">Year:</label>
+        <input type="text" name="year" id="year" required><br><br>
+
+        <label for="publisher">Publisher:</label>
+        <input type="text" name="publisher" id="publisher" required><br><br>
+
+        <input type="submit" value="Add Book">
+    </form>
+</body>
+</html>
