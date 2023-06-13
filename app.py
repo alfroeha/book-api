@@ -84,7 +84,6 @@ def get_all_books():
         }
         book_list.append(book_dict)
 
-    # return jsonify({'books': book_list})
     return render_template('books.html', books=book_list)
 
 
@@ -106,6 +105,8 @@ def get_book(book_id):
         'year': book['year'],
         'publisher': book['publisher']
     }
+
+    #return redirect(url_for('get_all_books'))
 
     return jsonify(book_dict)
 
@@ -147,8 +148,7 @@ def update_book_form(book_id):
     else:
         return jsonify({'message': 'Invalid request method'}), 405
 
-
-# Delete a book
+# Delete a book ketika menggunakan web
 @app.route('/books/<int:book_id>/delete', methods=['POST', 'DELETE'])
 def delete_book(book_id):
     conn = get_db()
@@ -162,15 +162,13 @@ def delete_book(book_id):
     if request.method == 'POST' or (request.method == 'DELETE' and request.form.get('_method') == 'DELETE'):
         cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
         conn.commit()
-
-        ''' message success json '''
-        #return jsonify({'message': 'Book deleted successfully'})
-        ''' return ke '/' daftar seluruh data'''
-        return redirect(url_for('get_all_books', book=book))
+        return redirect(url_for('get_all_books'))
 
     return jsonify({'message': 'Invalid request method'}), 405
+'''
 
 
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+
