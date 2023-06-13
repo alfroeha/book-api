@@ -30,6 +30,12 @@ def init_db():
 
         conn.commit()
 
+'''endpoint init_db()'''
+@app.route('/create-db')
+def create_db():
+    init_db()
+    return jsonify({'message': 'Database created'})
+
 # Create a new book
 @app.route('/add-books', methods=['POST'])
 def create_book():
@@ -49,10 +55,11 @@ def create_book():
     conn.commit()
     book_id = cursor.lastrowid
  
+    
     return redirect(url_for('get_all_books'))
 
 # Home route - Display the form
-@app.route('/add-books', methods=['GET','POST'])
+@app.route('/books', methods=['GET','POST'])
 def insert_book():
     return render_template('form.html')
 
@@ -77,6 +84,7 @@ def get_all_books():
         }
         book_list.append(book_dict)
 
+    # return jsonify({'books': book_list})
     return render_template('books.html', books=book_list)
 
 
@@ -154,7 +162,11 @@ def delete_book(book_id):
     if request.method == 'POST' or (request.method == 'DELETE' and request.form.get('_method') == 'DELETE'):
         cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
         conn.commit()
-        return redirect(url_for('get_all_books'))
+
+        ''' message success json '''
+        #return jsonify({'message': 'Book deleted successfully'})
+        ''' return ke '/' daftar seluruh data'''
+        return redirect(url_for('get_all_books', book=book))
 
     return jsonify({'message': 'Invalid request method'}), 405
 
