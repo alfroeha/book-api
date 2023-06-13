@@ -5,6 +5,8 @@ app = Flask(__name__)
 app.config['DATABASE'] = 'books.db'
 
 # Function to get the SQLite database connection
+
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(app.config['DATABASE'])
@@ -12,6 +14,8 @@ def get_db():
     return g.db
 
 # Initialize the database and create the books table if it doesn't exist
+
+
 def init_db():
     with app.app_context():
         conn = get_db()
@@ -30,13 +34,18 @@ def init_db():
 
         conn.commit()
 
+
 '''endpoint init_db()'''
+
+
 @app.route('/create-db')
 def create_db():
     init_db()
     return jsonify({'message': 'Database created'})
 
 # Create a new book
+
+
 @app.route('/add-books', methods=['POST'])
 def create_book():
     data = request.form
@@ -54,16 +63,19 @@ def create_book():
                    (title, author, year, publisher))
     conn.commit()
     book_id = cursor.lastrowid
- 
-    
+
     return redirect(url_for('get_all_books'))
 
 # Home route - Display the form
-@app.route('/books', methods=['GET','POST'])
+
+
+@app.route('/add-books', methods=['GET', 'POST'])
 def insert_book():
     return render_template('form.html')
 
 # Retrieve all books
+
+
 @app.route('/', methods=['GET'])
 def get_all_books():
     conn = get_db()
@@ -84,6 +96,9 @@ def get_all_books():
         }
         book_list.append(book_dict)
 
+    """untuk mengecek di postman"""
+    # return jsonify(book_list)
+    """untuk render ke web html"""
     return render_template('books.html', books=book_list)
 
 
@@ -106,12 +121,14 @@ def get_book(book_id):
         'publisher': book['publisher']
     }
 
-    #return redirect(url_for('get_all_books'))
+    # return redirect(url_for('get_all_books'))
 
     return jsonify(book_dict)
 
 # update book
-@app.route('/books/<int:book_id>/update/', methods=['GET','POST', 'PUT'])
+
+
+@app.route('/books/<int:book_id>/update/', methods=['GET', 'POST', 'PUT'])
 def update_book_form(book_id):
     conn = get_db()
     cursor = conn.cursor()
@@ -120,9 +137,9 @@ def update_book_form(book_id):
 
     if book is None:
         return jsonify({'message': 'Book not found'}), 404
-    
-    if request.method=='GET':
-        return render_template('update.html',book=book)
+
+    if request.method == 'GET':
+        return render_template('update.html', book=book)
 
     elif request.method == 'POST' or request.method == 'PUT':
         data = request.form
@@ -149,6 +166,8 @@ def update_book_form(book_id):
         return jsonify({'message': 'Invalid request method'}), 405
 
 # Delete a book ketika menggunakan web
+
+
 @app.route('/books/<int:book_id>/delete', methods=['POST', 'DELETE'])
 def delete_book(book_id):
     conn = get_db()
@@ -162,6 +181,32 @@ def delete_book(book_id):
     if request.method == 'POST' or (request.method == 'DELETE' and request.form.get('_method') == 'DELETE'):
         cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
         conn.commit()
+
+        ''' message success json '''
+        # return jsonify({'message': 'Book deleted successfully'})
+        ''' return ke '/' daftar seluruh data'''
+        return redirect(url_for('get_all_books', book=book))
+
+    return jsonify({'message': 'Invalid request method'}), 405
+
+
+'''
+# Delete ketika menggunakan postman, method hanya memakai DELETE
+@app.route('/books/<int:book_id>/delete', methods=['DELETE'])
+def delete_book(book_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM books WHERE id = ?', (book_id,))
+    book = cursor.fetchone()
+
+    if book is None:
+        return jsonify({'message': 'Book not found'}), 404
+
+    cursor.execute('DELETE FROM books WHERE id = ?', (book_id,))
+    conn.commit()
+
+    return jsonify({'message': 'Book deleted successfully'})
+
         return redirect(url_for('get_all_books'))
 
     return jsonify({'message': 'Invalid request method'}), 405
@@ -171,4 +216,3 @@ def delete_book(book_id):
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
-
